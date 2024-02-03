@@ -1,8 +1,20 @@
 ping:
 	ansible all -i inventory.ini -u root -m ping
 
-install-git:
-	ansible-playbook playbook-install-git.yml -i inventory.ini -u root
+play-check:
+	ansible-playbook --check playbook.yml -u root -i inventory.ini
 
-remove-git:
-	ansible-playbook playbook-remove-git.yml -i inventory.ini -u root
+play:
+	ansible-playbook playbook.yml -u root -i inventory.ini
+
+play-git:
+	ansible-playbook playbook.yml -u root -i inventory.ini -t git
+
+play-nodejs:
+	ansible-playbook playbook.yml -u root -i inventory.ini -t nodejs
+
+play-users:
+	ansible-playbook playbook.yml -u root -i inventory.ini -t users
+
+play-apt-cache:
+	ansible-playbook playbook.yml -u root -i inventory.ini -t aptcache
