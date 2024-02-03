@@ -1,0 +1,36 @@
+- hosts: webserver01
+  tasks:
+    - name: UFW firewall Allow Nginx HTTP
+      community.general.ufw:
+        name: Nginx HTTP
+        rule: allow
+      become: true
+
+    - name: Install nginx
+      ansible.builtin.apt:
+        name: nginx
+        # state: latest
+      become: true
+
+    - name: Update HTML page
+      ansible.builtin.copy:
+        src: files/index.html
+        dest: /usr/share/nginx/html/index.html
+        mode: "0777"
+      become: true
+
+    - name: Update nginx config
+      ansible.builtin.copy:
+        src: files/nginx.conf
+        dest: /etc/nginx/nginx.conf
+        mode: "0777"
+      notify:
+        - Restart nginx
+      become: true
+
+  handlers:
+    - name: Restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
+      become: true

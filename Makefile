@@ -18,3 +18,6 @@ play-users:
 
 play-apt-cache:
 	ansible-playbook playbook.yml -u root -i inventory.ini -t aptcache
+
+play-nginx:
+	ansible-playbook playbook-nginx.yml -u root -i inventory.ini
