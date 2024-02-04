@@ -1,25 +1,25 @@
-- hosts: webserver01
+- hosts: all
   vars:
     nginx_port: 80
     root_dir: /var/tmp/www
   tasks:
+    - name: Install nginx
+      ansible.builtin.apt:
+        name: nginx
+      become: true
+
     - name: UFW firewall Allow Nginx HTTP
       community.general.ufw:
         name: Nginx HTTP
         rule: allow
       become: true
 
-    - name: Install nginx
-      ansible.builtin.apt:
-        name: nginx
-      become: true
-
-    - name: Update HTML page
-      ansible.builtin.copy:
-        src: files/index.html
-        dest: /usr/share/nginx/html/index.html
-        mode: "0777"
-      become: true
+    # - name: Update HTML page
+    #   ansible.builtin.copy:
+    #     src: files/index.html
+    #     dest: /usr/share/nginx/html/index.html
+    #     mode: "0777"
+    #   become: true
 
     - name: "Create directory {{ root_dir }}"
       ansible.builtin.file:
@@ -29,8 +29,8 @@
       become: true
 
     - name: Set new HTML page
-      ansible.builtin.copy:
-        src: files/index_2.html
+      ansible.builtin.template:
+        src: files/html_with_server_name.html.j2
         dest: "{{ root_dir }}/index.html"
         mode: "0777"
       become: true
