@@ -7,8 +7,11 @@ play-check:
 play:
 	ansible-playbook playbook.yml -u root -i inventory.ini
 
-play-git:
-	ansible-playbook playbook.yml -u root -i inventory.ini -t git
+play-git-no-gather-facts:
+	time ansible-playbook playbook-install-git-no-gather-facts.yml -u root -i inventory.ini
+
+play-git-gather-facts:
+	time ansible-playbook playbook-install-git-gather-facts.yml -u root -i inventory.ini
 
 play-nodejs:
 	ansible-playbook playbook.yml -u root -i inventory.ini -t nodejs
@@ -21,3 +24,4 @@ play-apt-cache:
 
 play-nginx:
 	ansible-playbook playbook-nginx.yml -u root -i inventory.ini
+

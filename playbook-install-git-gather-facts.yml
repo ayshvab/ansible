@@ -1,9 +1,8 @@
 - name: Install git
-  hosts: all
+  hosts: appservers
   tasks:
     - name: Install git
       ansible.builtin.apt:
         name: git
         state: present
-        update_cache: true
       become: true
