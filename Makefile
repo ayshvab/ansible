@@ -28,3 +28,5 @@ play-nginx:
 play-loops:
 	ansible-playbook playbook-loops.yml -u root -i inventory.ini
 
+play-when:
+	ansible-playbook playbook-when.yml -u root -i inventory.ini

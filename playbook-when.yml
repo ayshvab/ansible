@@ -1,0 +1,49 @@
+- name: When
+  hosts: all
+  vars:
+    users:
+      - { name: jamie }
+  tasks:
+    - name: Create Users on Debian Systems
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        shell: "/bin/bash"
+        groups: sudo
+        state: present
+      loop: "{{users}}"
+      when: ansible_os_family == "Debian"
+    - name: Create Users on RedHat Systems
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        shell: "/bin/bash"
+        groups: wheel
+        state: present
+      loop: "{{users}}"
+      when: ansible_os_family == "RedHat"
+    - name: Ensure .ssh dir is exist
+      ansible.builtin.file:
+        path: "/home/{{ item.name }}/.ssh"
+        recurse: true
+        owner: "{{ item.name }}"
+        mode: '0700'
+        state: directory
+      loop: "{{users}}"
+    - name: Users Copy SSH Pub Keys
+      ansible.builtin.copy:
+        src: "files/id_{{ item.name }}.pub"
+        dest: "/home/{{ item.name }}/.ssh/authorized_keys"
+        owner: "{{ item.name }}"
+        mode: '0600'
+      loop: "{{users}}"
+    - name: Install Git on Debian flavored system
+      ansible.builtin.apt:
+        name: git
+        state: present
+      loop: "{{users}}"
+      when: ansible_os_family == "Debian"
+    - name: Install Git on RedHat flavored system
+      ansible.builtin.yum:
+        name: git
+        state: present
+      loop: "{{users}}"
+      when: ansible_os_family == "RedHat"
