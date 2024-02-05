@@ -25,3 +25,6 @@ play-apt-cache:
 play-nginx:
 	ansible-playbook playbook-nginx.yml -u root -i inventory.ini
 
+play-loops:
+	ansible-playbook playbook-loops.yml -u root -i inventory.ini
+

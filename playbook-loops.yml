@@ -1,0 +1,38 @@
+- name: Play with loops
+  hosts: webservers
+  vars:
+    users:
+      - { name: jamie, groups: sudo }
+      - { name: sansa, groups: sudo }
+      - { name: robert, groups: sudo }      
+  tasks:
+    - name: Create Users
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        state: present
+        groups: "{{ item.groups }}"
+      loop: "{{users}}"
+    - name: Users Git Configs
+      ansible.builtin.template:
+        src: files/gitconfig.j2
+        dest: "/home/{{ item.name }}/.gitconfig"
+        owner: "{{ item.name }}"
+        mode: '0600'
+      loop: "{{users}}"
+    - name: Ensure .ssh dir is exist
+      ansible.builtin.file:
+        path: "/home/{{ item.name }}/.ssh"
+        recurse: true
+        owner: "{{ item.name }}"
+        mode: '0700'
+        state: directory
+      loop: "{{users}}"
+    - name: Users Copy SSH Pub Keys
+      ansible.builtin.copy:
+        src: "files/id_{{ item.name }}.pub"
+        dest: "/home/{{ item.name }}/.ssh/authorized_keys"
+        owner: "{{ item.name }}"
+        mode: '0600'
+      loop: "{{users}}"
+
+
