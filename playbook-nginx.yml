@@ -1,7 +1,8 @@
-- hosts: all
+- hosts: webserver01
   vars:
     nginx_port: 80
     root_dir: /var/tmp/www
+    some_string: "This is server {{ ansible_hostname }}!"
   tasks:
     - name: Install nginx
       ansible.builtin.apt:
@@ -14,32 +15,25 @@
         rule: allow
       become: true
 
-    # - name: Update HTML page
-    #   ansible.builtin.copy:
-    #     src: files/index.html
-    #     dest: /usr/share/nginx/html/index.html
-    #     mode: "0777"
-    #   become: true
-
     - name: "Create directory {{ root_dir }}"
       ansible.builtin.file:
         path: "{{ root_dir }}"
         state: "directory"
-        mode: "0777"
+        mode: "0755"
       become: true
 
     - name: Set new HTML page
       ansible.builtin.template:
-        src: files/html_with_server_name.html.j2
+        src: files/html_with_filter.html.j2
         dest: "{{ root_dir }}/index.html"
-        mode: "0777"
+        mode: "0644"
       become: true
 
     - name: Update nginx config
       ansible.builtin.template:
         src: files/nginx.conf.j2
         dest: /etc/nginx/nginx.conf
-        mode: "0777"
+        mode: "0644"
       notify:
         - Restart nginx
       become: true
