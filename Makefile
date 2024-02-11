@@ -30,3 +30,6 @@ play-loops:
 
 play-when:
 	ansible-playbook playbook-when.yml -u root -i inventory.ini
+
+play-caddy:
+	ansible-playbook playbook-caddy.yml -u root -i inventory.ini

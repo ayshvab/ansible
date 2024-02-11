@@ -1,0 +1,42 @@
+- hosts: webserver01
+  become: true
+  tasks:
+    - name: Ensure essential packages
+      ansible.builtin.apt:
+        name:
+          - debian-keyring
+          - debian-archive-keyring
+          - apt-transport-https
+          - curl
+          - gnupg2
+        state: present
+    - name: Add Caddy apt key
+      ansible.builtin.apt_key:
+        url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+        state: present
+    - name: Add Caddy repository
+      ansible.builtin.apt_repository:
+        repo: deb https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main
+        state: present
+        update_cache: true
+    - name: Install Caddy
+      ansible.builtin.package:
+        name: caddy
+        state: present
+      notify: Restart Caddy
+    - name: Install mosh
+      ansible.builtin.package:
+        name: mosh
+        state: present
+
+# After mosh
+        # ufw allow mosh
+        # update locale: sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+
+# ufw allow http
+
+  handlers:
+    - name: Restart Caddy
+      ansible.builtin.service:
+        name: caddy
+        state: restarted
