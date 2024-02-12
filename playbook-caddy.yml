@@ -1,6 +1,14 @@
 - hosts: webserver01
   become: true
   tasks:
+    - name: Ensure correct locale
+      ansible.builtin.locale_gen:
+        name: en_US.UTF-8
+        state: present
+      tags: [locale]
+    - name: Set locale
+      ansible.builtin.shell: update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
+      tags: [locale]
     - name: Ensure essential packages
       ansible.builtin.apt:
         name:
